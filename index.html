@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<pre id="content"></pre>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCzhlZyXgSjY-M2cw77oVat8BRT3gnglus",
+    authDomain: "project-29c37.firebaseapp.com",
+    databaseURL: "https://project-29c37.firebaseio.com",
+    projectId: "project-29c37",
+    storageBucket: "project-29c37.appspot.com",
+    messagingSenderId: "231919916628"
+  };
+  firebase.initializeApp(config);
+
+  var ref = firebase.database().ref();
+  ref.on('value', function (snapshot) {
+    document.getElementById('content').textContent =
+        JSON.stringify(snapshot.val(), null, 3); // 3 代表縮排的項目
+  })
+</script>
+</body>
+</html>
