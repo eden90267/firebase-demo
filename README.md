@@ -282,3 +282,88 @@ ref.on('value', function (snapshot) {
 ```
 
 底下放一個即時瀏覽 Firebase 資料庫，可以用來除錯 (路徑隨你設置，不一定都是根目錄)。
+
+## 新增一個 todolist
+
+```html
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+<h1>TodoList</h1>
+<input id="txt" type="text" placeholder="請輸入內容...">
+<input id="send" type="button" value="送出">
+<ul id="list">
+</ul>
+<script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
+<script>
+  // Initialize Firebase
+  var config = {
+    apiKey: "AIzaSyCzhlZyXgSjY-M2cw77oVat8BRT3gnglus",
+    authDomain: "project-29c37.firebaseapp.com",
+    databaseURL: "https://project-29c37.firebaseio.com",
+    projectId: "project-29c37",
+    storageBucket: "project-29c37.appspot.com",
+    messagingSenderId: "231919916628"
+  };
+  firebase.initializeApp(config);
+
+  // dom
+  var txt = document.getElementById('txt');
+  var send = document.getElementById('send');
+  var list = document.getElementById('list');
+
+  // todos
+  var todos = firebase.database().ref('todos');
+
+  // 按送出按鈕，可以寫入到資料庫
+  send.addEventListener('click', function (e) {
+    todos.push({content: txt.value});
+  });
+
+  // 顯示內容出來
+  todos.on('value', function (snapshot) {
+    var str = '';
+    var data = snapshot.val();
+    for (var item in data) {
+      str += '<li>' + data[item].content + '</li>';
+    }
+    list.innerHTML = str;
+  });
+  
+  // 
+</script>
+</body>
+</html>
+```
+
+---
+
+增加刪除邏輯：
+
+```javascript
+// ...
+// 顯示內容出來
+todos.on('value', function (snapshot) {
+  var str = '';
+  var data = snapshot.val();
+  for (var item in data) {
+    str += '<li data-key="' + item + '">' + data[item].content + '</li>';
+  }
+  list.innerHTML = str;
+});
+
+// 刪除邏輯
+list.addEventListener('click', function (e) {
+  if (e.target.nodeName = 'LI') {
+    var key = e.target.dataset.key;
+    todos.child(key).remove();
+  }
+});
+```

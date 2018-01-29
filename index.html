@@ -8,7 +8,11 @@
   <title>Document</title>
 </head>
 <body>
-<pre id="content"></pre>
+<h1>TodoList</h1>
+<input id="txt" type="text" placeholder="請輸入內容...">
+<input id="send" type="button" value="送出">
+<ul id="list">
+</ul>
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -22,11 +26,36 @@
   };
   firebase.initializeApp(config);
 
-  var ref = firebase.database().ref();
-  ref.on('value', function (snapshot) {
-    document.getElementById('content').textContent =
-        JSON.stringify(snapshot.val(), null, 3); // 3 代表縮排的項目
-  })
+  // dom
+  var txt = document.getElementById('txt');
+  var send = document.getElementById('send');
+  var list = document.getElementById('list');
+
+  // todos
+  var todos = firebase.database().ref('todos');
+
+  // 按送出按鈕，可以寫入到資料庫
+  send.addEventListener('click', function (e) {
+    todos.push({content: txt.value});
+  });
+
+  // 顯示內容出來
+  todos.on('value', function (snapshot) {
+    var str = '';
+    var data = snapshot.val();
+    for (var item in data) {
+      str += '<li data-key="' + item + '">' + data[item].content + '</li>';
+    }
+    list.innerHTML = str;
+  });
+
+  // 刪除邏輯
+  list.addEventListener('click', function (e) {
+    if (e.target.nodeName = 'LI') {
+      var key = e.target.dataset.key;
+      todos.child(key).remove();
+    }
+  });
 </script>
 </body>
 </html>
