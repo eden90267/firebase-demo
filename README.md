@@ -367,3 +367,173 @@ list.addEventListener('click', function (e) {
   }
 });
 ```
+
+## forEach、orderByChild - 資料排序
+
+```javascript
+// 排序
+// 由輕到重
+var people = {
+  "bob": {
+    "height": 178,
+    "old": 18,
+    "weight": 70
+  },
+  "casper": {
+    "height": 180,
+    "old": 13,
+    "weight": 80
+  },
+  "mike": {
+    "height": 162,
+    "old": 15,
+    "weight": 55
+  }
+};
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>讀取>>forEach 依序撈出資料
+peopleRef.orderByChild('weight').once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+orderByChild 需搭配 forEach，用 val() 是沒辦法排序的。
+
+orderByChild 可依據數字做排序。
+
+## 排序規則
+
+```javascript
+// 排序
+// 由輕到重
+var people = {
+  "mike": {
+    "height" : 4,
+    "length" : 12.5,
+    "weight": 5000
+  },
+  "casper": {
+    "height" : 3,
+    "length" : 9,
+    "weight" : 2500
+  },
+  "bob": {
+    "height": "dalse",
+    "length" : false,
+    "weight" : 2500
+  },
+  "john": {
+    "height" : true,
+    "length" : 9,
+    "weight" : 2500
+  }
+  ,
+  "josh": {
+    "height" : false,
+    "length" : 9,
+    "weight" : 2500
+  },
+  'boss':{
+    "length": 3
+  },
+  'frank':{
+    height:{'aaa':1}
+  }
+};
+var peopleRef = firebase.database().ref('people');
+peopleRef.set(people);
+// 不同值型態有不同 orderByChild 排序方式：
+// 1. null
+// 2. false
+// 3. true
+// 4. 數字
+// 5. 字串 (A ~ Z)
+// 6. 物件 (Object)
+peopleRef.orderByChild('weight').once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+## startAt、endAt - 搜尋區間規則 (上)
+
+- startAt()：多少以上的時候撈多少資料
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+// 3500 以上，4500 以下的過濾
+peopleRef.orderByChild('weight').startAt(3500).endAt(4500).once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+- endAt()
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+// 3500 以上，4500 以下的過濾
+peopleRef.orderByChild('weight').startAt(3500).endAt(4500).once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+- equalTo()
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+// 3500 以上，4500 以下的過濾
+peopleRef.orderByChild('weight').equalTo(3500).once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+也可用 forEach 用 key 來得知過濾資料。
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+peopleRef.orderByChild('weight').equalTo(3500).once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.key);
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+## startAt、endAt - 搜尋區間規則 (下)
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+peopleRef.orderByChild('mail').equalTo('gon@gmail.com').once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.key);
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```

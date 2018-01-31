@@ -8,11 +8,7 @@
   <title>Document</title>
 </head>
 <body>
-<h1>TodoList</h1>
-<input id="txt" type="text" placeholder="請輸入內容...">
-<input id="send" type="button" value="送出">
-<ul id="list">
-</ul>
+<h1>Hello</h1>
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -26,35 +22,29 @@
   };
   firebase.initializeApp(config);
 
-  // dom
-  var txt = document.getElementById('txt');
-  var send = document.getElementById('send');
-  var list = document.getElementById('list');
-
-  // todos
-  var todos = firebase.database().ref('todos');
-
-  // 按送出按鈕，可以寫入到資料庫
-  send.addEventListener('click', function (e) {
-    todos.push({content: txt.value});
-  });
-
-  // 顯示內容出來
-  todos.on('value', function (snapshot) {
-    var str = '';
-    var data = snapshot.val();
-    for (var item in data) {
-      str += '<li data-key="' + item + '">' + data[item].content + '</li>';
+  // 排序
+  // 由輕到重
+  var people = {
+    "mike": {
+      "length" : 12.5,
+      "weight": 5000,
+      "mail": "gon@gmail.com"
+    },
+    "casper": {
+      "length" : 9,
+      "weight" : 4500,
+      "mail": "kk@gmail.com"
     }
-    list.innerHTML = str;
-  });
-
-  // 刪除邏輯
-  list.addEventListener('click', function (e) {
-    if (e.target.nodeName = 'LI') {
-      var key = e.target.dataset.key;
-      todos.child(key).remove();
-    }
+  };
+  var peopleRef = firebase.database().ref('people');
+  // peopleRef.set(people);
+  // 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
+  peopleRef.orderByChild('mail').equalTo('gon@gmail.com').once('value', function (snapshot) {
+    snapshot.forEach(function (item) {
+      console.log(item.key);
+      console.log(item.val());
+    });
+    // console.log(snapshot.val());
   });
 </script>
 </body>
