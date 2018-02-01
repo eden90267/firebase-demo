@@ -537,3 +537,71 @@ peopleRef.orderByChild('mail').equalTo('gon@gmail.com').once('value', function (
   // console.log(snapshot.val());
 });
 ```
+
+## limit - 限制筆數
+
+```javascript
+var peopleRef = firebase.database().ref('people');
+// peopleRef.set(people);
+// 路徑>>排序('屬性')>>過濾>>限制筆數>>讀取>>forEach 依序撈出資料
+// limitToFirst(num) 最前面撈回來、limitToLast(num) 最後面撈回來
+peopleRef.orderByChild('weight').startAt(3500).limitToFirst(1).once('value', function (snapshot) {
+  snapshot.forEach(function (item) {
+    console.log(item.key);
+    console.log(item.val());
+  });
+  // console.log(snapshot.val());
+});
+```
+
+## 時間篇(1) - new Date()
+
+```javascript
+var time = new Date();
+console.log(time);
+console.log(time.getFullYear());
+// 0 = 1月
+console.log(time.getMonth());
+// 禮拜 7 = 0、禮拜 1 = 1
+console.log(time.getDay());
+console.log(time.getHours());
+console.log(time.getMinutes());
+console.log(time.getSeconds());
+// 1000 毫秒 = 1 秒
+console.log(time.getMilliseconds());
+```
+
+## 時間篇(2) - timeStamp
+
+timestamp：時間戳記、時戳。從 1970 年 1 月 1 日 0 時 0 分 0 秒起至現在的總秒數，不考慮閏秒。
+
+```javascript
+var time = new Date();
+time.getTime();
+
+new Date('2016/5/4');
+new Date('2016-5-4');
+new Date(1509871588583); // 也會轉日期格式
+```
+
+## 時間篇(3) - UI 時間串接
+
+```javascript
+var time = document.getElementById('time');
+var send = document.getElementById('send');
+
+send.addEventListener('click', function () {
+  console.log(time.value);
+  var now = new Date(time.value);
+  console.log(now); // 08:00 GMT+0800
+  var startTime = now.setHours(0, 0, 0, 0);
+  console.log(startTime);
+  var endTime = now.setHours(23, 59, 59, 999);
+  console.log(endTime);
+
+  // endAt()、startAt()
+});
+```
+
+## reverse - 資料翻轉調整
+

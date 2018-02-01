@@ -9,6 +9,8 @@
 </head>
 <body>
 <h1>Hello</h1>
+<input type="date" id="time">
+<input type="button" id="send" value="送出">
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -22,30 +24,20 @@
   };
   firebase.initializeApp(config);
 
-  // 排序
-  // 由輕到重
-  var people = {
-    "mike": {
-      "length" : 12.5,
-      "weight": 5000,
-      "mail": "gon@gmail.com"
-    },
-    "casper": {
-      "length" : 9,
-      "weight" : 4500,
-      "mail": "kk@gmail.com"
-    }
-  };
-  var peopleRef = firebase.database().ref('people');
-  // peopleRef.set(people);
-  // 路徑>>排序('屬性')>>過濾>>讀取>>forEach 依序撈出資料
-  peopleRef.orderByChild('mail').equalTo('gon@gmail.com').once('value', function (snapshot) {
-    snapshot.forEach(function (item) {
-      console.log(item.key);
-      console.log(item.val());
-    });
-    // console.log(snapshot.val());
-  });
+  var time = document.getElementById('time');
+  var send = document.getElementById('send');
+
+  send.addEventListener('click', function () {
+    console.log(time.value);
+    var now = new Date(time.value);
+    console.log(now); // 08:00 GMT+0800
+    var startTime = now.setHours(0, 0, 0, 0);
+    console.log(startTime);
+    var endTime = now.setHours(23, 59, 59, 999);
+    console.log(endTime);
+
+    // endAt()、startAt()
+  })
 </script>
 </body>
 </html>
