@@ -605,3 +605,19 @@ send.addEventListener('click', function () {
 
 ## reverse - 資料翻轉調整
 
+```javascript
+// 顯示內容出來
+// 想要放到最前面
+todos.on('value', function (snapshot) {
+  var str = '';
+  var data = [];
+  snapshot.forEach(function (item) {
+    data.push(item.val());
+  });
+  data.reverse();
+  for (var item in data) {
+    str += '<li>' + data[item].content + '</li>';
+  }
+  list.innerHTML = str;
+});
+```

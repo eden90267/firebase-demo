@@ -8,9 +8,13 @@
   <title>Document</title>
 </head>
 <body>
-<h1>Hello</h1>
-<input type="date" id="time">
-<input type="button" id="send" value="送出">
+<label for="order">排序</label>
+<select name="order" id="order">
+  <option value="0" selected>正向</option>
+  <option value="1">反向</option>
+</select>
+<ul id="list">
+</ul>
 <script src="https://www.gstatic.com/firebasejs/4.9.0/firebase.js"></script>
 <script>
   // Initialize Firebase
@@ -24,20 +28,65 @@
   };
   firebase.initializeApp(config);
 
-  var time = document.getElementById('time');
-  var send = document.getElementById('send');
+  var orderElement = document.querySelector("#order");
+  var listElement = document.querySelector("#list")
 
-  send.addEventListener('click', function () {
-    console.log(time.value);
-    var now = new Date(time.value);
-    console.log(now); // 08:00 GMT+0800
-    var startTime = now.setHours(0, 0, 0, 0);
-    console.log(startTime);
-    var endTime = now.setHours(23, 59, 59, 999);
-    console.log(endTime);
+  // 步驟一：請介接 firebase 資料庫，將 data 資料寫入
+  // 步驟二：當觸發下拉選單時，依照使用者選擇內容進行排序
+  // PS：HTML、CSS、JS 可隨意增加資料進行練習
+  var data = {
+    "father": {
+      "title": "father",
+      "age": 44,
+      "weight": 88,
+      "height": 178
+    },
+    "mom": {
+      "title": "mom",
+      "age": 42,
+      "weight": 66,
+      "height": 166
+    },
+    "son": {
+      "title": "son",
+      "age": 13,
+      "weight": 40,
+      "height": 133
+    },
+    "daughter": {
+      "title": "daughter",
+      "age": 8,
+      "weight": 35,
+      "height": 110
+    }
+  };
 
-    // endAt()、startAt()
-  })
+  var homeRef = firebase.database().ref('home');
+  // homeRef.set(data);
+
+  function genListContent() {
+    homeRef.once('value', function (snapshot) {
+      var str = "";
+      var arr = [];
+      snapshot.forEach(function (item) {
+        arr.push(item.val());
+      });
+      console.log(orderElement.value);
+      if (orderElement.value === "1") {
+        arr.reverse();
+      }
+      for (var item in arr) {
+        str += '<li>' + arr[item].title + '</li>';
+      }
+      listElement.innerHTML = str;
+    });
+  }
+
+  genListContent();
+
+  orderElement.addEventListener('change', function (e) {
+    genListContent();
+  });
 </script>
 </body>
 </html>
